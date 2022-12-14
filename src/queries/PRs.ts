@@ -1,21 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import GHApi from '../utils/axios';
+import { Label } from './labels';
 
-// interface Response {
-//   incomplete_results: boolean;
-//   items: Repo[];
-//   total_count: number;
-// }
-
-export interface Label {
-    id: number;
-    node_id: string;
-    url: string;
-    name: string;
-    description: string;
-    color: string;
-    default: boolean;
-}
 
 export interface Issue {
     id: number;

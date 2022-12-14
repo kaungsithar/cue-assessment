@@ -6,30 +6,48 @@ import {
   TextInput,
   Text,
   Center,
+  Select,
+  SelectItem,
+  Flex,
+  MultiSelect,
 } from "@mantine/core";
 import { IconSearch } from "@tabler/icons";
 import { Fragment, useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
 import { usePRsQuery } from "../../queries/PRs";
-import { useIssueInfiniteQuery } from "./../../queries/Issue";
+import { IssueQuery, useIssueInfiniteQuery } from "./../../queries/Issue";
 import Issues from "./Issues";
+import LabelSelectItem from "./LabelSelectItem";
+import { useLabelsQuery } from "../../queries/labels";
 
-type ActiveType = "issues" | "prs";
-type IssuesState = "all" | "open" | "closed";
+type IssueType = "issue" | "pr";
+type IssueState = "open" | "closed" | "null";
 
 const IssuesPR = () => {
   const { owner, repo } = useParams();
   let [searchParams, setSearchParams] = useSearchParams();
   const q = searchParams.get("q") ?? "";
-  const type = (searchParams.get("type") ?? "issues") as ActiveType;
-  const state = (searchParams.get("state") ?? "all") as IssuesState;
+  const type = searchParams.get("type");
+  const labels = searchParams.get("labels")?.split(",") ?? [];
+  let state = searchParams.get("state");
+  if(!(state === "open" || state === "closed"))
+    state = null;
+  
+  const isPR = type === "pr";
+  const {data: labelsList} = useLabelsQuery(`${owner}/${repo}`);
 
-  const isPRs = type === "prs";
-
+  const issueQuery : IssueQuery = {
+    q,
+    labels,
+    ownerRepo: `${owner}/${repo}`, 
+    state,
+    isPR,
+  }
   const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
-    useIssueInfiniteQuery(q, `${owner}/${repo}`, state, isPRs);
-  console.log(data?.pages);
+    useIssueInfiniteQuery(issueQuery);
+  
+  const selectData : SelectItem[] = labelsList?.map(l => ({value: l.name, label: l.name, color: l.color})) ?? [];
 
   const { ref, inView } = useInView();
   useEffect(() => {
@@ -44,17 +62,15 @@ const IssuesPR = () => {
         bg="dark.7"
         pos="sticky"
         top={0}
-        component="form"
-        mb="md"
-        onSubmit={(e) => {
+        
+      >
+        <form onSubmit={(e) => {
           e.preventDefault();
-
           const formData = new FormData(e.currentTarget);
           const q = formData.get("search")?.toString();
           q ? searchParams.set("q", q) : searchParams.delete("q");
           setSearchParams(searchParams);
-        }}
-      >
+        }}>
         <TextInput
           placeholder="Search in title..."
           label={`${owner}/${repo}`}
@@ -65,24 +81,26 @@ const IssuesPR = () => {
             isLoading ? <Loader size="xs" /> : <IconSearch size={14} />
           }
         />
-        <Box py="sm">
+        </form>
+        <Flex py="sm">
           <SegmentedControl
             mr="md"
-            defaultValue={type}
-            onChange={(v: ActiveType) => {
-              v === "issues"
+            defaultValue={type??"issue"}
+            onChange={(v: IssueType) => {
+              v === "issue"
                 ? searchParams.delete("type")
                 : searchParams.set("type", v);
               setSearchParams(searchParams);
             }}
             data={[
-              { label: "Issues", value: "issues" },
-              { label: "Pull Requests", value: "prs" },
+              { label: "Issues", value: "issue" },
+              { label: "Pull Requests", value: "pr" },
             ]}
           />
           <SegmentedControl
-            defaultValue={state}
-            onChange={(v: IssuesState) => {
+          mr="md"
+            defaultValue={state ?? "all"}
+            onChange={(v: IssueState | "all") => {
               v === "all"
                 ? searchParams.delete("state")
                 : searchParams.set("state", v);
@@ -94,8 +112,27 @@ const IssuesPR = () => {
               { label: "Closed", value: "closed" },
             ]}
           />
+          
+          {selectData.length > 0 && 
+          <MultiSelect 
+          defaultValue={labels}
+          onChange={(v) => {
+            if(v.length > 0){
+              searchParams.set("labels",v.join(','));
+            }else{
+              searchParams.delete("labels");
+            }
+            setSearchParams(searchParams);
+          }}
+          placeholder="Labels"
+          data={selectData}
+          itemComponent={LabelSelectItem}
+          searchable
+          />}
+          
+        </Flex>
+    
         </Box>
-      </Box>
 
       <Box ta="center" mt="xl">
         {isLoading && <Text>Searching ...</Text>}
@@ -104,7 +141,7 @@ const IssuesPR = () => {
 
       {data?.pages.map((page, i) => (
         <Fragment key={i}>
-          <Issues data={page.items} isPRs={isPRs} />
+          <Issues data={page.items} isPRs={isPR} />
         </Fragment>
       ))}
       {/* {data != null && } */}

@@ -15,7 +15,7 @@ import {
   GitPullRequestDraftIcon,
 } from "@primer/octicons-react";
 import { Issue } from "../../queries/Issue";
-import { Label } from "./../../queries/PRs";
+import { Label } from "../../queries/labels";
 
 interface Props {
   data: Issue[];
