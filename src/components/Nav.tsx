@@ -2,7 +2,7 @@ import { ActionIcon, Avatar, Box, Button, Flex, Text } from "@mantine/core";
 import { IconHome } from "@tabler/icons";
 import { Link } from "react-router-dom";
 import { UserService } from "../lib/auth";
-import { LogOut } from "../router";
+import { LogOut } from "./RouteHelpers";
 
 interface Props {
   homeButton?: boolean;

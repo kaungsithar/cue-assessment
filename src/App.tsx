@@ -1,8 +1,6 @@
-import { BrowserRouter, Route, RouterProvider, Routes } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 import { MantineProvider } from "@mantine/core";
 import { Toaster } from "react-hot-toast";
-import Auth from "./pages/Auth";
-import Issues from "./pages/Issues";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import router from "./router";
 
