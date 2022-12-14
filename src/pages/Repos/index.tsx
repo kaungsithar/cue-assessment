@@ -1,19 +1,6 @@
-import React, { Fragment, useEffect, useState } from "react";
-import {
-  Badge,
-  Box,
-  Button,
-  Center,
-  Chip,
-  Container,
-  Grid,
-  Loader,
-  Text,
-  TextInput,
-  Title,
-  Transition,
-} from "@mantine/core";
-import { IconStar, IconSearch, IconGitFork } from "@tabler/icons";
+import { Fragment, useEffect } from "react";
+import { Box, Center, Container, Loader, Text, TextInput } from "@mantine/core";
+import { IconSearch } from "@tabler/icons";
 import ReposGrid from "./ReposGrid";
 import { useRepoInfiniteQuery } from "../../queries/repos";
 import { useSearchParams } from "react-router-dom";
