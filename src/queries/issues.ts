@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 import GHApi from "../utils/GHApi";
 import { getNextPage } from "../utils/linkHeader";
@@ -35,7 +35,7 @@ export function useIssueInfiniteQuery(query: IssueQuery) {
     refetchOnWindowFocus: false,
     queryKey: ["issues", query],
     queryFn: async ({ pageParam = 1 }) => {
-      
+
       const queries = createSearchQueries(query);
       const { data, headers } = await GHApi.get<SearchResponse>(
         `search/issues?q=${queries}&page=${pageParam}`
@@ -60,7 +60,7 @@ function createSearchQueries({
 
   queries += isPR ? "+is:pull-request" : "+is:issue";
 
-  if(state !== null)
+  if (state !== null)
     queries += `+state:${state}`;
 
   return queries;

@@ -7,6 +7,7 @@ specifiers:
   '@primer/octicons-react': ^17.9.0
   '@tabler/icons': ^1.116.1
   '@tanstack/react-query': ^4.19.1
+  '@tanstack/react-virtual': 3.0.0-alpha.0
   '@testing-library/jest-dom': ^5.16.5
   '@testing-library/react': ^13.4.0
   '@testing-library/user-event': ^13.5.0
@@ -33,6 +34,7 @@ dependencies:
   '@primer/octicons-react': 17.10.0_react@18.2.0
   '@tabler/icons': 1.117.0_biqbaboplfbrettd7655fr4n2y
   '@tanstack/react-query': 4.19.1_biqbaboplfbrettd7655fr4n2y
+  '@tanstack/react-virtual': 3.0.0-alpha.0_react@18.2.0
   '@testing-library/jest-dom': 5.16.5
   '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
   '@testing-library/user-event': 13.5.0
@@ -2313,6 +2315,10 @@ packages:
       react: 18.2.0
     dev: false
 
+  /@reach/observe-rect/1.2.0:
+    resolution: {integrity: sha512-Ba7HmkFgfQxZqqaeIWWkNK0rEhpxVQHIoVyW1YDSkGsGIXzcaW4deC8B0pZrNSSyLTdIk7y+5olKt5+g0GmFIQ==}
+    dev: false
+
   /@remix-run/router/1.0.5:
     resolution: {integrity: sha512-my0Mycd+jruq/1lQuO5LBB6WTlL/e8DTCYWp44DfMTDcXz8DcTlgF0ISaLsGewt+ctHN+yA8xMq3q/N7uWJPug==}
     engines: {node: '>=14'}
@@ -2545,6 +2551,17 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       use-sync-external-store: 1.2.0_react@18.2.0
+    dev: false
+
+  /@tanstack/react-virtual/3.0.0-alpha.0_react@18.2.0:
+    resolution: {integrity: sha512-WpHU/dt34NwZZ8qtiE05TF+nX/b1W6qrWZarO+s8jJFpPVicrTbJKp5Bjt4eSJuk7aYw272oEfsH3ABBRgj+3A==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: '>=16'
+    dependencies:
+      '@babel/runtime': 7.20.6
+      '@reach/observe-rect': 1.2.0
+      react: 18.2.0
     dev: false
 
   /@testing-library/dom/8.19.0:

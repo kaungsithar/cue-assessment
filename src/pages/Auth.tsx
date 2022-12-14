@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { FormEvent, useState } from "react";
 import toast from "react-hot-toast";
-import { useMutateUser  } from "../queries/user";
+import { useMutateUser } from "../queries/user";
 import { useNavigate } from "react-router-dom";
 import { setAccessToken, UserService } from "./../lib/auth";
 import { updateAPIAuthHeader } from "../utils/GHApi";
@@ -29,12 +29,12 @@ function useForm() {
     const toastId = toast.loading("Loggin In...");
 
     try {
-      const {data} = await mutateAsync(token);
-      
+      const { data } = await mutateAsync(token);
+
       setAccessToken(token);
       UserService.saveInfo(data);
       updateAPIAuthHeader();
-      
+
       toast.success("Success!", {
         id: toastId,
       });
@@ -74,7 +74,7 @@ const Auth = () => {
       <Box component="form" mt="lg" onSubmit={onSubmit}>
         <PasswordInput
           autoFocus
-          onChange={e => setToken(e.target.value)}
+          onChange={(e) => setToken(e.target.value)}
           label="Github Access Token"
           placeholder="*******"
           description={desc}
