@@ -1,7 +1,7 @@
 import { Badge, Box, Flex, Grid, Text, Title } from "@mantine/core";
 import { IconStar, IconGitFork } from "@tabler/icons";
 import { Link } from "react-router-dom";
-import { Repo } from "./../../queries/Repo";
+import { Repo } from "../../queries/repos";
 
 interface Props {
   data: Repo[];

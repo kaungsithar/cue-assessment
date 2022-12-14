@@ -8,56 +8,51 @@ import {
   Title,
   Box,
 } from "@mantine/core";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import toast from "react-hot-toast";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useMutateUser, useUser } from "./../queries/User";
+import { useMutateUser  } from "../queries/user";
 import { useNavigate } from "react-router-dom";
-import { getAccessToken, setAccessToken } from "./../lib/auth";
+import { setAccessToken, UserService } from "./../lib/auth";
+import { updateAPIAuthHeader } from "../utils/GHApi";
 
 function useForm() {
   const navigate = useNavigate();
+  const { mutateAsync } = useMutateUser();
   const [token, setToken] = useState("");
 
-  const { mutateAsync } = useMutateUser();
-  const valid = token ? true : false;
-
-  const register = () => {
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) =>
-      setToken(e.target.value);
-    return { onChange: handleChange, value: token, valid };
-  };
+  const isValid = token ? true : false;
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!valid) return;
+    if (!isValid) return;
 
     const toastId = toast.loading("Loggin In...");
+
     try {
-      await mutateAsync(token);
+      const {data} = await mutateAsync(token);
+      
       setAccessToken(token);
+      UserService.saveInfo(data);
+      updateAPIAuthHeader();
+      
       toast.success("Success!", {
         id: toastId,
       });
+
       navigate("/");
     } catch (error) {
+      console.error(error);
       toast.error("Failed to Log in", {
         id: toastId,
       });
     }
   };
 
-  return { register, onSubmit, valid };
+  return { setToken, onSubmit, isValid };
 }
 
 const Auth = () => {
-  const navigate = useNavigate();
-  const { register, onSubmit, valid } = useForm();
-
-  useEffect(() => {
-    const accessToken = getAccessToken();
-    if (accessToken != null) navigate("/");
-  }, []);
+  const { setToken, onSubmit, isValid } = useForm();
 
   const desc = (
     <Text>
@@ -78,12 +73,13 @@ const Auth = () => {
 
       <Box component="form" mt="lg" onSubmit={onSubmit}>
         <PasswordInput
-          {...register()}
+          autoFocus
+          onChange={e => setToken(e.target.value)}
           label="Github Access Token"
           placeholder="*******"
           description={desc}
         />
-        <Button mt="lg" size="xs" type="submit" fullWidth disabled={!valid}>
+        <Button mt="lg" size="xs" type="submit" fullWidth disabled={!isValid}>
           Log In
         </Button>
       </Box>

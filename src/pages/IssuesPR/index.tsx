@@ -12,14 +12,14 @@ import {
   MultiSelect,
 } from "@mantine/core";
 import { IconSearch } from "@tabler/icons";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect,  } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
-import { usePRsQuery } from "../../queries/PRs";
-import { IssueQuery, useIssueInfiniteQuery } from "./../../queries/Issue";
+import { IssueQuery, useIssueInfiniteQuery } from "../../queries/issues";
 import Issues from "./Issues";
 import LabelSelectItem from "./LabelSelectItem";
 import { useLabelsQuery } from "../../queries/labels";
+import Nav from "../../components/Nav";
 
 type IssueType = "issue" | "pr";
 type IssueState = "open" | "closed" | "null";
@@ -58,6 +58,7 @@ const IssuesPR = () => {
 
   return (
     <Container>
+      <Nav />
       <Box
         bg="dark.7"
         pos="sticky"
@@ -72,6 +73,7 @@ const IssuesPR = () => {
           setSearchParams(searchParams);
         }}>
         <TextInput
+        autoFocus
           placeholder="Search in title..."
           label={`${owner}/${repo}`}
           defaultValue={q}

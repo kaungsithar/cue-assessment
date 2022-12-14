@@ -6,4 +6,7 @@ const GHApi = axios.create({
   headers: { 'Authorization': 'Bearer ' + getAccessToken() }
 });
 
+export function updateAPIAuthHeader(){
+  GHApi.defaults.headers["Authorization"] = "Bearer " + getAccessToken(); 
+}
 export default GHApi

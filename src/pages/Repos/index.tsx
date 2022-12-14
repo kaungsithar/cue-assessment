@@ -14,20 +14,18 @@ import {
 } from "@mantine/core";
 import { IconStar, IconSearch, IconGitFork } from "@tabler/icons";
 import ReposGrid from "./ReposGrid";
-import { useRepoQuery } from "../../queries/Repo";
+import { useRepoQuery } from "../../queries/repos";
+import { useSearchParams } from "react-router-dom";
+import Nav from "../../components/Nav";
 
 const Repos = () => {
-  const [q, setQ] = useState("");
-  const { data, status, isLoading, refetch } = useRepoQuery(q);
+  let [searchParams, setSearchParams] = useSearchParams();
+  const q = searchParams.get("q") ?? "";
+  const { data,isFetching } = useRepoQuery(q);
 
   return (
-    <Box p="md">
-      {status}
-      <Box ta="right">
-        <Button component="a" variant="subtle" href="/logout">
-          Log Out
-        </Button>
-      </Box>
+    <Container>
+      <Nav homeButton={false}/>
       <Box
         component="form"
         mb="md"
@@ -35,33 +33,29 @@ const Repos = () => {
           e.preventDefault();
 
           const formData = new FormData(e.currentTarget);
-          const q = formData.get("search")?.toString() ?? "";
-          setQ(q);
-          
+          const q = formData.get("search")?.toString();
+          q ? searchParams.set("q", q) : searchParams.delete("q");
+          setSearchParams(searchParams);
         }}
       >
         <TextInput
+        autoFocus
+          defaultValue={q}
           placeholder="Type 'react' or 'vue'"
           label="Search Respositories"
           name="search"
           rightSection={
-            isLoading ? <Loader size="xs" /> : <IconSearch size={14} />
+            isFetching ? <Loader size="xs" /> : <IconSearch size={14} />
           }
         />
       </Box>
 
-      {data == null && (
-        <Box ta="center" mt="xl">
-          {isLoading ? (
-            <Text>Searching ...</Text>
-          ) : (
-            <Text>Search for a repository</Text>
-          )}
-        </Box>
-      )}
+      {!q && <Text ta="center">Search for a repository</Text>}
+
+      {isFetching && <Text ta="center">Searching ...</Text>}
 
       {data != null && <ReposGrid data={data.items} />}
-    </Box>
+    </Container>
   );
 };
 

@@ -2,34 +2,35 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
   Navigate,
+  Outlet,
   Route,
 } from "react-router-dom";
-import { getAccessToken } from "../lib/auth";
-import Auth from "../pages/Auth";
-import Issues from "../pages/Issues";
-import Repos from "./../pages/Repos";
-import { clearAccessToken } from "./../lib/auth";
+import { getAccessToken } from "./lib/auth";
+import Auth from "./pages/Auth";
+import Issues from "./pages/Issues";
+import Repos from "./pages/Repos";
+import { clearAccessToken } from "./lib/auth";
 import { ReactElement, ReactNode } from "react";
-import IssuesPR from "../pages/IssuesPR";
+import IssuesPR from "./pages/IssuesPR";
 
 interface FCProp {
   children: ReactElement;
 }
 
-const RequireAuth = ({ children }: FCProp) => {
+const RequireAuth = () => {
   const token = getAccessToken();
   if (!token) return <Navigate to="/auth" />;
 
-  return children;
+  return <Outlet />;
 };
 const RedirectIfLoggedIn = ({ children }: FCProp) => {
   const token = getAccessToken();
-  if (token != null) return <Navigate to="/" />;
+  if (token !== null) return <Navigate to="/" />;
 
   return children;
 };
 
-const LogOut = () => {
+export const LogOut = () => {
   clearAccessToken();
   return <Navigate to="/auth" />;
 };
@@ -44,21 +45,24 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/app",
-    element: (
-      <RequireAuth>
-        <Repos />
-      </RequireAuth>
-    ),
-  },
-  {
-    path: "/app/:owner/:repo",
-    element: <IssuesPR />,
-  },
-  {
     path: "/logout",
     element: <LogOut />,
   },
+  {
+    path: "/app",
+    element: <RequireAuth />,
+    children: [
+      {
+        index: true,
+        element: <Repos />,
+      },
+      {
+        path: ":owner/:repo",
+        element: <IssuesPR />,
+      },
+    ],
+  },
+
   {
     path: "*",
     element: <Navigate to="/app" />,

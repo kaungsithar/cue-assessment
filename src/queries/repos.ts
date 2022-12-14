@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import GHApi from './../utils/axios';
+import GHApi from '../utils/GHApi';
 
 interface Response {
   incomplete_results: boolean;
@@ -21,7 +21,7 @@ interface Owner {
 
 export function useRepoQuery(q: string) {
   return useQuery({
-    
+    enabled: q !== "",
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     queryKey: ['repo', q],

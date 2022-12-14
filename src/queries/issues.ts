@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
-import GHApi from "./../utils/axios";
-import { getNextPage } from "./../utils/linkHeader";
+import GHApi from "../utils/GHApi";
+import { getNextPage } from "../utils/linkHeader";
 import { Label } from "./labels";
 
 interface SearchResponse {

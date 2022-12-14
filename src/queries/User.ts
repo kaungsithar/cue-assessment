@@ -4,7 +4,7 @@ import axios from 'axios'
 export interface User {
   node_id: string;
   avatar_url: string;
-  name: string;
+  login: string;
 }
 
 export function useUser() {
